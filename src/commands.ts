@@ -1,13 +1,13 @@
 import Discord from "discord.js";
 import { Parser } from "expr-eval";
-import { removeItem } from "./utils";
-import sqlite3 from "sqlite3";
-const client = new Discord.Client();
+// import { removeItem } from "./utils";
+// import sqlite3 from "sqlite3";
+// const client = new Discord.Client();
 const parser = new Parser();
-const states = {
-  cu: [] as { cooldown: boolean; userId: string }[],
-};
-const sql = new sqlite3.Database(":memory:");
+// const states = {
+// cu: [] as { cooldown: boolean; userId: string }[],
+// };
+// const sql = new sqlite3.Database(":memory:");
 
 const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZabcçdefgğhii̇jklmnoöprsştuüvyz";
 const generateRandomLaugh = (min: number, max: number) => {
@@ -21,13 +21,14 @@ const generateRandomLaugh = (min: number, max: number) => {
 
 export default {
   laughTo31: (msg: Discord.Message) => {
-    if (msg.content.includes("31")) msg.reply(generateRandomLaugh(30, 60));
+    if (msg.content.includes("31"))
+      msg.channel.send(generateRandomLaugh(30, 60));
     else {
       try {
         const sum = parser.parse(msg.content).evaluate();
-        if (sum === 31) msg.reply(generateRandomLaugh(30, 60));
+        if (sum === 31) msg.channel.send(generateRandomLaugh(30, 60));
       } catch (err) {
-        console.log(err);
+        return;
       }
     }
   },
@@ -37,7 +38,7 @@ export default {
       welcomeWord.includes(msg.content);
     });
     const isFound = welcomeWords.includes(msg.content.toLowerCase());
-    if (isFound) msg.reply("Cami mi lan burası.");
+    if (isFound) msg.channel.send("Cami mi lan burası.");
   },
   // cu: (msg: Discord.Message) => {
   // 	const userId = msg.author.id;
