@@ -1,5 +1,7 @@
 import Discord from "discord.js";
 import { Parser } from "expr-eval";
+import { getRepository } from "typeorm";
+import { CuEvent } from "./entity/CuEvent";
 // import { removeItem } from "./utils";
 // import sqlite3 from "sqlite3";
 // const client = new Discord.Client();
@@ -40,20 +42,27 @@ export default {
     const isFound = welcomeWords.includes(msg.content.toLowerCase());
     if (isFound) msg.channel.send("Cami mi lan burası.");
   },
-  // cu: (msg: Discord.Message) => {
-  // 	const userId = msg.author.id;
-  // 	if (!states.cu.includes({ userId, cooldown: false })) {
-  // 		states.cu.push({ userId, cooldown: false });
-  // 		msg.reply("cu");
-  // 		return;
-  // 	} else if (states.cu.includes({ userId, cooldown: true })) {
-  // 		return;
-  // 	} else if (msg.content.includes("cu ne")) {
-  // 		msg.reply("ANANIN AMCUĞUUUU");
-  // 		setTimeout(() => {
-  // 			states.cu = removeItem(states.cu, { userId, cooldown: true });
-  // 		}, 86400000);
-  // 		return;
-  // 	}
-  // },
+  checkIfCuEventFinish: async (msg: Discord.Message) => {
+    const cuRepo = getRepository(CuEvent);
+    const cuVictim = await cuRepo.findOne({ channelId: msg.channel.id });
+    const isSentenceIncludeCu = msg.content
+      .split(" ")
+      .every((value, i) => value.toLowerCase() === "cu");
+    if (isSentenceIncludeCu && cuVictim) {
+      msg.reply("ANANIN AMCUUUUU");
+      await cuRepo.delete({ channelId: msg.channel.id });
+    }
+  },
+  createCuEvent: async (msg: Discord.Message) => {
+    if (Math.random() > 0.99) {
+      const repo = getRepository(CuEvent);
+      const cuVictim = await repo.findOne({ channelId: msg.channel.id });
+      if (!cuVictim) {
+        const cuEvent = new CuEvent();
+        cuEvent.channelId = msg.channel.id;
+        msg.channel.send("cu");
+        repo.save(cuEvent);
+      }
+    }
+  },
 };
