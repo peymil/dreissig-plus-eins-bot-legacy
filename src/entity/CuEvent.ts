@@ -1,11 +1,19 @@
-import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  CreateDateColumn,
+} from "typeorm";
 
 @Entity()
-export class CuEvent {
+export class CuEvent extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Column()
+  channelId: string;
 
-    @Column()
-    channelId!: string;
+  @CreateDateColumn()
+  creationDate: Date;
 }
