@@ -9,11 +9,14 @@ export default async (msg: Discord.Message) => {
   const cuVictim = await cuRepo.findOne({ channelId: msg.channel.id });
   //Check if cu event is already fired and user wrote a message which includes cu as substring
   if (cuVictim) {
+    const isCuEventTimedOut =
+      +new Date() - +cuVictim.creationDate / 60000 >
+      process.env.CU_EVENT_TIMEOUT_MINUTES;
     const isSentenceIncludeCu = isIncludesAsSubstring(msg.content, "cu");
-    if (isSentenceIncludeCu) {
+    if (isSentenceIncludeCu && !isCuEventTimedOut) {
       msg.reply("ANANIN AMCUUUUU");
-      await cuRepo.delete({ channelId: msg.channel.id });
     }
+    await cuRepo.delete({ channelId: msg.channel.id });
     // If cu event is not fired
   } else {
     if (Math.random() * 100 > process.env.CU_EVENT_CHANCE_PERCANTAGE) {
