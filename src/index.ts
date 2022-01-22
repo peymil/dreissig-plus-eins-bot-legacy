@@ -1,19 +1,30 @@
-import Discord, { Intents } from "discord.js";
 import "reflect-metadata";
-import typeOrm from "typeorm";
+import { Intents, Interaction, Message } from "discord.js";
+import { Client } from "discordx";
+import { createConnection } from "../node_modules/typeorm/index.js";
 import config from "./config";
-import msgListeners from "./msgListeners";
+import { importx } from "@discordx/importer";
+import path from "path";
+import isBotItself from "./guards/isBotItself";
 
 //Driver
 const main = async () => {
-  const client = new Discord.Client({
+  const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    guards: [isBotItself],
   });
-  await client.login(config.TOKEN);
 
-  await typeOrm.createConnection();
-  console.log("initialization completed");
+  client.on("ready", async () => {
+    console.log(">> Bot started");
 
-  client.on("message", msgListeners);
+    await client.initApplicationCommands();
+    await client.initApplicationPermissions();
+  });
+
+  await createConnection();
+
+  await importx(path.join(__dirname, "/msgListeners/*.{ts,js}"));
+
+  await client.login(config.TOKEN); // provide your bot token
 };
 main();
