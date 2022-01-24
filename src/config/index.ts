@@ -1,3 +1,2 @@
-import Config from "./Config";
-
-export default new Config();
+export { default as ConfigValidators } from "./ConfigValidators";
+export { default } from "./Config";

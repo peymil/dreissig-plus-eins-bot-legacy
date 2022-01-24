@@ -13,7 +13,8 @@ const main = async () => {
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
     guards: [isBotItself],
   });
-  await config.loadValues().catch(config.saveValues);
+  await config.loadValues().catch(() => config.saveValues());
+
   client.on("ready", async () => {
     console.log(">> Bot started");
 
