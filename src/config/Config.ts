@@ -1,10 +1,10 @@
 import fs from "fs/promises";
-import { ConfigImplement } from "./ConfigImplement";
 import ConfigValidators from "./ConfigValidators";
-class Config implements ConfigImplement {
-  TOKEN = "";
-  CU_EVENT_TIMEOUT_MINUTES = 0;
+class Config {
+  TOKEN = process.env.TOKEN || "";
+  CU_EVENT_TIMEOUT_MINUTES = 5;
   CU_EVENT_CHANCE_PERCANTAGE = 0.01;
+  CAMI_MI_EVENT_TIMEOUT = 5;
 
   async loadValues(validators?: ConfigValidators) {
     const file = await fs.readFile(__dirname + "/../../data/config.json");
@@ -29,7 +29,10 @@ class Config implements ConfigImplement {
         this[configFileKey] = configFileJson[configFileKey];
     }
   }
-
+  async watchForConfig() {
+    const a = await fs.watch(__dirname + "/../../data/config.json");
+    await this.watchForConfig();
+  }
   async saveValues() {
     await fs.writeFile(
       __dirname + "/../../data/config.json",
