@@ -7,13 +7,16 @@ import {
 } from "typeorm";
 
 @Entity()
-export class CuEvent extends BaseEntity {
+export default class ChannelEvent extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  channelId: string;
+  event_name: string;
+
+  @Column()
+  channel_id: string;
 
   @CreateDateColumn()
-  creationDate: Date;
+  creation_date: Date;
 }
