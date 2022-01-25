@@ -1,8 +1,7 @@
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
 import { Parser } from "expr-eval";
-import { getRepository } from "typeorm";
 import config from "../config";
-import { CuEvent } from "../entity/CuEvent";
+import ChannelEventProvider from "../event/ChannelEventProvider";
 import doesIncludesAsSubstring from "../utils/doesIncludesAsSubstring";
 import generateRandomLaugh from "../utils/generateRandomLaugh";
 
@@ -11,33 +10,26 @@ class Jokes {
   @On("messageCreate")
   async cu([msg]: ArgsOf<"messageCreate">) {
     //Create cu event
-    const cuRepo = getRepository(CuEvent);
-    const cuVictim = await cuRepo.findOne({ channelId: msg.channel.id });
+    const eventName = "cu";
+    const cuVictim = await ChannelEventProvider.find(eventName, msg.channelId);
 
-    //Check if cu event is already fired and user wrote a message which includes cu as substring
+    //Check if cu event is already initialized and user wrote a message which includes cu as substring
     if (cuVictim) {
       const isCuEventTimedOut =
-        (+new Date() - +cuVictim.creationDate) / 60000 >
+        (+new Date() - +cuVictim.creation_date) / 60000 >
         config.CU_EVENT_TIMEOUT_MINUTES;
-
       if (doesIncludesAsSubstring(msg.content, "cu") && !isCuEventTimedOut) {
         const jokeSentence = "ANANIN AMCUUUUU";
         await msg.reply(jokeSentence).catch(() => {
           msg.channel.send(jokeSentence);
         });
       }
-      await cuRepo.delete({ channelId: msg.channel.id });
-      // If cu event is not fired
-    } else {
-      // If author is bot don't init cu event
-      if (msg.author.bot) return;
-
-      if (Math.random() < config.CU_EVENT_CHANCE_PERCANTAGE) {
-        const cuEvent = new CuEvent();
-        cuEvent.channelId = msg.channel.id;
-        msg.channel.send("cu");
-        cuRepo.save(cuEvent);
-      }
+      await ChannelEventProvider.delete(eventName, msg.channelId);
+    }
+    // If cu event is not initialized
+    else if (Math.random() < config.CU_EVENT_CHANCE_PERCANTAGE) {
+      await ChannelEventProvider.create(eventName, msg.channelId);
+      msg.channel.send("cu");
     }
   }
 
@@ -57,13 +49,37 @@ class Jokes {
   }
 
   @On("messageCreate")
-  camiMi([msg]: ArgsOf<"messageCreate">) {
-    const welcomeWords = ["selamun aleyküm", "selamın aleyküm", "sa"];
-    welcomeWords.map((welcomeWord) => {
-      welcomeWord.includes(msg.content);
-    });
-    const isFound = welcomeWords.includes(msg.content.toLowerCase());
-    if (isFound) msg.channel.send("Cami mi lan burası");
+  async camiMiEvetCamiymis([msg]: ArgsOf<"messageCreate">) {
+    const eventName = "camiMi";
+    const camiMiEvent = await ChannelEventProvider.find(
+      eventName,
+      msg.channelId
+    );
+    if (camiMiEvent) {
+      const welcomeReplyWords = ["aleyküm selam", "as", "aleykümselam"];
+      const lowerCaseMsg = msg.content.toLowerCase();
+      const isFound = welcomeReplyWords.some((welcomeReplyWord) => {
+        return doesIncludesAsSubstring(lowerCaseMsg, welcomeReplyWord);
+      });
+      const isCamiMiEventTimedOut =
+        (+new Date() - +camiMiEvent.creation_date) / 60000 >
+        config.CU_EVENT_TIMEOUT_MINUTES;
+      if (isFound && !isCamiMiEventTimedOut) {
+        msg.channel.send("Camiymiş");
+        await ChannelEventProvider.delete(eventName, msg.channelId);
+      }
+    } else {
+      const welcomeWords = ["selamun aleyküm", "selamın aleyküm", "sa"];
+      const lowerCaseMsg = msg.content.toLowerCase();
+      const isFound = welcomeWords.some((welcomeWord) => {
+        return doesIncludesAsSubstring(lowerCaseMsg, welcomeWord);
+      });
+
+      if (isFound) {
+        msg.channel.send("Cami mi lan burası");
+        await ChannelEventProvider.create(eventName, msg.channelId);
+      }
+    }
   }
 }
 export default Jokes;
