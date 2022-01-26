@@ -1,5 +1,10 @@
 import fs from "fs/promises";
 import ConfigValidators from "./ConfigValidators";
+
+const fullConfigDir = process.env.CONFIG_DIR
+  ? `${__dirname}/${process.env.CONFIG_DIR}`
+  : `${__dirname}/../../data/config.json`;
+
 class Config {
   BOT_TOKEN = process.env.BOT_TOKEN || "";
   CU_EVENT_TIMEOUT_MINUTES = 5;
@@ -7,7 +12,7 @@ class Config {
   CAMI_MI_EVENT_TIMEOUT = 5;
 
   async loadValues(validators?: ConfigValidators) {
-    const file = await fs.readFile(__dirname + "/../../data/config.json");
+    const file = await fs.readFile(fullConfigDir);
     if (!file) return;
     const configFileJson = JSON.parse(file.toString());
 
@@ -31,14 +36,11 @@ class Config {
     }
   }
   async watchForConfig() {
-    const a = await fs.watch(__dirname + "/../../data/config.json");
+    const a = await fs.watch(fullConfigDir);
     await this.watchForConfig();
   }
   async saveValues() {
-    await fs.writeFile(
-      __dirname + "/../../data/config.json",
-      JSON.stringify(this)
-    );
+    await fs.writeFile(fullConfigDir, JSON.stringify(this));
   }
 }
 export default new Config();

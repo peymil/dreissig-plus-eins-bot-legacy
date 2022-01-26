@@ -3,7 +3,8 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: "development" | "production";
       PWD: string;
-      TOKEN?: string;
+      BOT_TOKEN?: string;
+      CONFIG_DIR?: string;
     }
   }
 }
