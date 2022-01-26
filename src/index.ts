@@ -26,6 +26,6 @@ const main = async () => {
 
   await importx(path.join(__dirname, "/msgListeners/*.{ts,js}"));
 
-  await client.login(config.TOKEN); // provide your bot token
+  await client.login(config.BOT_TOKEN); // provide your bot token
 };
 main();
