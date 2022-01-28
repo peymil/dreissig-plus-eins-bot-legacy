@@ -66,8 +66,8 @@ class Jokes {
         config.CU_EVENT_TIMEOUT_MINUTES;
       if (isFound && !isCamiMiEventTimedOut) {
         msg.channel.send("Camiymiş");
-        await ChannelEventProvider.delete(eventName, msg.channelId);
       }
+      await ChannelEventProvider.delete(eventName, msg.channelId);
     } else {
       const welcomeWords = ["selamun aleyküm", "selamın aleyküm", "sa"];
       const lowerCaseMsg = msg.content.toLowerCase();
