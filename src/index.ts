@@ -10,7 +10,11 @@ import isBotItself from "./guards/isBotItself";
 //Driver
 const main = async () => {
   const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    intents: [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_PRESENCES,
+    ],
     guards: [isBotItself],
   });
   await config.loadValues().catch(() => config.saveValues());
