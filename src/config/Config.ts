@@ -7,9 +7,9 @@ const fullConfigDir = process.env.CONFIG_DIR
 
 class Config {
   BOT_TOKEN = process.env.BOT_TOKEN || "";
-  CU_EVENT_TIMEOUT_MINUTES = 5;
-  CU_EVENT_CHANCE_PERCANTAGE = 0.01;
-  CAMI_MI_EVENT_TIMEOUT = 5;
+  CU_EVENT_TIMEOUT_MINUTES = 2;
+  CU_EVENT_CHANCE_PERCANTAGE = 0.0025;
+  CAMI_MI_EVENT_TIMEOUT = 2;
 
   async loadValues(validators?: ConfigValidators) {
     const file = await fs.readFile(fullConfigDir);
