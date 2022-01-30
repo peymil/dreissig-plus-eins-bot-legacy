@@ -1,6 +1,7 @@
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
 import { Parser } from "expr-eval";
 import config from "../config";
+import { welcomeReplyWords, welcomeWords } from "../constants";
 import ChannelEventProvider from "../event/ChannelEventProvider";
 import doesIncludesAsSubstring from "../utils/doesIncludesAsSubstring";
 import generateRandomLaugh from "../utils/generateRandomLaugh";
@@ -18,13 +19,15 @@ class Jokes {
       const isCuEventTimedOut =
         (+new Date() - +cuVictim.creation_date) / 60000 >
         config.CU_EVENT_TIMEOUT_MINUTES;
-      if (doesIncludesAsSubstring(msg.content, "cu") && !isCuEventTimedOut) {
+      if (isCuEventTimedOut) {
+        await ChannelEventProvider.delete(eventName, msg.channelId);
+      } else if (doesIncludesAsSubstring(msg.content, "cu")) {
         const jokeSentence = "ANANIN AMCUUUUU";
         await msg.reply(jokeSentence).catch(() => {
           msg.channel.send(jokeSentence);
         });
+        await ChannelEventProvider.delete(eventName, msg.channelId);
       }
-      await ChannelEventProvider.delete(eventName, msg.channelId);
     }
     // If cu event is not initialized
     else if (Math.random() < config.CU_EVENT_CHANCE_PERCANTAGE) {
@@ -56,7 +59,6 @@ class Jokes {
       msg.channelId
     );
     if (camiMiEvent) {
-      const welcomeReplyWords = ["aleyküm selam", "as", "aleykümselam"];
       const lowerCaseMsg = msg.content.toLowerCase();
       const isFound = welcomeReplyWords.some((welcomeReplyWord) => {
         return doesIncludesAsSubstring(lowerCaseMsg, welcomeReplyWord);
@@ -64,12 +66,13 @@ class Jokes {
       const isCamiMiEventTimedOut =
         (+new Date() - +camiMiEvent.creation_date) / 60000 >
         config.CU_EVENT_TIMEOUT_MINUTES;
-      if (isFound && !isCamiMiEventTimedOut) {
+      if (isCamiMiEventTimedOut) {
+        await ChannelEventProvider.delete(eventName, msg.channelId);
+      } else if (isFound) {
         msg.channel.send("Camiymiş");
+        await ChannelEventProvider.delete(eventName, msg.channelId);
       }
-      await ChannelEventProvider.delete(eventName, msg.channelId);
     } else {
-      const welcomeWords = ["selamun aleyküm", "selamın aleyküm", "sa"];
       const lowerCaseMsg = msg.content.toLowerCase();
       const isFound = welcomeWords.some((welcomeWord) => {
         return doesIncludesAsSubstring(lowerCaseMsg, welcomeWord);

@@ -1,6 +1,6 @@
 import { DiscordAPIError } from "discord.js";
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
-import { BANNED_ACTIVITIES } from "./Constants";
+import { BANNED_ACTIVITIES } from "../constants";
 @Discord()
 class Jokes {
   @On("presenceUpdate")
