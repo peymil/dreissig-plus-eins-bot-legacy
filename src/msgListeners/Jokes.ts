@@ -54,10 +54,22 @@ class Jokes {
   @On("messageCreate")
   async camiMiEvetCamiymis([msg]: ArgsOf<"messageCreate">) {
     const eventName = "camiMi";
+
     const camiMiEvent = await ChannelEventProvider.find(
       eventName,
       msg.channelId
     );
+
+    const lowerCaseMsg = msg.content.toLowerCase();
+    const isWelcomeWordFound = welcomeWords.some((welcomeWord) => {
+      return doesIncludesAsSubstring(lowerCaseMsg, welcomeWord);
+    });
+    if (isWelcomeWordFound) {
+      msg.channel.send("Cami mi lan burası");
+      if (!camiMiEvent)
+        await ChannelEventProvider.create(eventName, msg.channelId);
+    }
+
     if (camiMiEvent) {
       const lowerCaseMsg = msg.content.toLowerCase();
       const isFound = welcomeReplyWords.some((welcomeReplyWord) => {
@@ -71,16 +83,6 @@ class Jokes {
       } else if (isFound) {
         msg.channel.send("Camiymiş");
         await ChannelEventProvider.delete(eventName, msg.channelId);
-      }
-    } else {
-      const lowerCaseMsg = msg.content.toLowerCase();
-      const isFound = welcomeWords.some((welcomeWord) => {
-        return doesIncludesAsSubstring(lowerCaseMsg, welcomeWord);
-      });
-
-      if (isFound) {
-        msg.channel.send("Cami mi lan burası");
-        await ChannelEventProvider.create(eventName, msg.channelId);
       }
     }
   }
