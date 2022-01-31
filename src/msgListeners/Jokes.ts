@@ -1,7 +1,8 @@
+import { MessageEmbed } from "discord.js";
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
 import { Parser } from "expr-eval";
 import config from "../config";
-import { welcomeReplyWords, welcomeWords } from "../constants";
+import { welcomeReplyWords, welcomeWords, cumGibiLink } from "../constants";
 import ChannelEventProvider from "../event/ChannelEventProvider";
 import doesIncludesAsSubstring from "../utils/doesIncludesAsSubstring";
 import generateRandomLaugh from "../utils/generateRandomLaugh";
@@ -48,6 +49,13 @@ class Jokes {
         // The only error that can occur is parser error. If parser fails to parse just end the function
         return;
       }
+    }
+  }
+
+  @On("messageCreate")
+  laughToCum([msg]: ArgsOf<"messageCreate">) {
+    if (doesIncludesAsSubstring(msg.content, "cum")) {
+      msg.channel.send(cumGibiLink);
     }
   }
 

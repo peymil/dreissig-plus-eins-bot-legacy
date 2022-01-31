@@ -11,3 +11,5 @@ export const welcomeWords = [
   "selamınaleyküm",
   "sa",
 ];
+export const cumGibiLink =
+  "https://cdn.discordapp.com/attachments/468445665400193035/937757559903887500/kum.mp4";
