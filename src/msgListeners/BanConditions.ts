@@ -4,23 +4,27 @@ import { BANNED_ACTIVITIES } from "../constants";
 @Discord()
 abstract class Jokes {
   @On("presenceUpdate")
-  async forbiddenGames(
-    [oldPresence, newPresence]: ArgsOf<"presenceUpdate">,
-    client: Client
-  ) {
-    try {
-      const activityName = newPresence.activities[0].name;
-      const prevActivityName = newPresence.activities[0].name;
-      const doesAlreadyPlaying = activityName === prevActivityName;
-      if (BANNED_ACTIVITIES.includes(activityName) && !doesAlreadyPlaying) {
-        await newPresence.guild?.systemChannel?.send(
+  async forbiddenGames([oldPresence, newPresence]: ArgsOf<"presenceUpdate">, client: Client) {
+    const oldActivites = oldPresence?.activities || [];
+    const activites = newPresence.activities;
+    const activityName = activites.length > 0 ? newPresence.activities[0].name : "";
+    const prevActivityName = oldActivites.length > 0 && newPresence.activities[0].name;
+    const isAlreadyPlaying = activityName === prevActivityName;
+    if (BANNED_ACTIVITIES.includes(activityName) && !isAlreadyPlaying) {
+      const systemChannel = newPresence.guild?.systemChannel;
+      if (systemChannel) {
+        await systemChannel.send(
           `<@${newPresence.userId}> ${activityName} OYUNCUSU TESPIT EDILDI! ${activityName} OYUNCUSU TESPIT EDILDI! AMINA KOYAYIM ${activityName} OYUNCUSU`
         );
-        // Disabled for testing
-        // await newPresence.member?.kick(activityName + "oynuyo");
       }
-    } catch (err) {
-      return;
+
+      const member = newPresence.member;
+      if (member) {
+        await member.ban({
+          reason: activityName + "oynuyo",
+          days: 7,
+        });
+      }
     }
   }
 }
