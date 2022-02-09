@@ -8,7 +8,7 @@ import doesIncludesAsSubstring from "../utils/doesIncludesAsSubstring";
 import generateRandomLaugh from "../utils/generateRandomLaugh";
 
 @Discord()
-class Jokes {
+abstract class Jokes {
   @On("messageCreate")
   async cu([msg]: ArgsOf<"messageCreate">) {
     //Create cu event
@@ -54,7 +54,7 @@ class Jokes {
 
   @On("messageCreate")
   laughToCum([msg]: ArgsOf<"messageCreate">) {
-    if (doesIncludesAsSubstring(msg.content, "cum")) {
+    if (doesIncludesAsSubstring(msg.content, "cum") || doesIncludesAsSubstring(msg.content, "kum") ) {
       msg.channel.send(cumGibiLink);
     }
   }
