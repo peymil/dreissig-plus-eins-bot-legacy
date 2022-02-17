@@ -6,7 +6,7 @@
   "dependencies": {
     "@discordx/importer": "^1.1.2",
     "discord.js": "^13.6.0",
-    "discordx": "^9.1.12",
+    "discordx": "^9.2.7",
     "expr-eval": "^2.0.2",
     "mathjs": "^9.3.2",
     "reflect-metadata": "^0.1.13",
