@@ -20,10 +20,15 @@ abstract class Jokes {
 
       const member = newPresence.member;
       if (member) {
-        await member.ban({
-          reason: activityName + "oynuyo",
-          days: 7,
-        });
+        try {
+          await member.ban({
+            reason: activityName + "oynuyo",
+            days: 7,
+          });
+        }
+        catch (err) {
+          console.log("No permission to ban.")
+        }
       }
     }
   }
