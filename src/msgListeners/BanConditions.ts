@@ -5,32 +5,31 @@ import { BANNED_ACTIVITIES } from "../constants";
 abstract class Jokes {
   @On("presenceUpdate")
   async forbiddenGames([oldPresence, newPresence]: ArgsOf<"presenceUpdate">, client: Client) {
-    const oldActivites = oldPresence?.activities || [];
-    const activites = newPresence.activities;
-    const activityName = activites.length > 0 ? newPresence.activities[0].name : "";
-    const prevActivityName = oldActivites.length > 0 && newPresence.activities[0].name;
-    const isAlreadyPlaying = activityName === prevActivityName;
-    if (BANNED_ACTIVITIES.includes(activityName) && !isAlreadyPlaying) {
+    const currentActivity = newPresence?.activities[0];
+    const prevActivity = oldPresence?.activities[0];
+    const currentActivityName = currentActivity?.name
+    const isAlreadyPlaying = currentActivity?.name === prevActivity?.name;
+    if (BANNED_ACTIVITIES.includes(currentActivityName) && !isAlreadyPlaying) {
       const systemChannel = newPresence.guild?.systemChannel;
       if (systemChannel) {
         await systemChannel.send(
-          `<@${newPresence.userId}> ${activityName} OYUNCUSU TESPIT EDILDI! ${activityName} OYUNCUSU TESPIT EDILDI! AMINA KOYAYIM ${activityName} OYUNCUSU`
-        );
+          `<@${newPresence.userId}> ${currentActivityName.toUpperCase()} OYUNCUSU TESPIT EDILDI! ${currentActivityName.toUpperCase()} OYUNCUSU TESPIT EDILDI! AMINA KOYAYIM ${currentActivityName} OYUNCUSU`
+        ).catch(() => { });
+        const member = newPresence.member;
+        if (member) {
+          member.ban({
+            reason: currentActivityName + "oynuyo",
+            days: 7,
+          }).catch(() => {
+            systemChannel.send(
+              `<@${newPresence.userId}>'yi banlamak için yetki verir misinizzzz :innocent:`
+            ).catch(() => { });
+          })
+        }
       }
 
-      const member = newPresence.member;
-      if (member) {
-        try {
-          await member.ban({
-            reason: activityName + "oynuyo",
-            days: 7,
-          });
-        }
-        catch (err) {
-          console.log("No permission to ban.")
-        }
-      }
     }
   }
 }
+
 export default Jokes;
