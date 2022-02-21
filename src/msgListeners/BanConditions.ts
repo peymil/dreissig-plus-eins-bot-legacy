@@ -8,12 +8,13 @@ abstract class Jokes {
     const currentActivity = newPresence?.activities[0];
     const prevActivity = oldPresence?.activities[0];
     const currentActivityName = currentActivity?.name
-    const isAlreadyPlaying = currentActivity?.name === prevActivity?.name;
+    const isAlreadyPlaying = currentActivityName === prevActivity?.name;
     if (BANNED_ACTIVITIES.includes(currentActivityName) && !isAlreadyPlaying) {
       const systemChannel = newPresence.guild?.systemChannel;
+      const uppercaseAct = currentActivityName.toUpperCase()
       if (systemChannel) {
         await systemChannel.send(
-          `<@${newPresence.userId}> ${currentActivityName.toUpperCase()} OYUNCUSU TESPIT EDILDI! ${currentActivityName.toUpperCase()} OYUNCUSU TESPIT EDILDI! AMINA KOYAYIM ${currentActivityName} OYUNCUSU`
+          `<@${newPresence.userId}> ${uppercaseAct} OYUNCUSU TESPIT EDILDI! ${uppercaseAct} OYUNCUSU TESPIT EDILDI! AMINA KOYAYIM ${uppercaseAct} OYUNCUSU`
         ).catch(() => { });
         const member = newPresence.member;
         if (member) {
