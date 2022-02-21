@@ -1,6 +1,6 @@
 export const BANNED_ACTIVITIES = [
   "Genshin Impact",
-  "League of Legends",
+  "League Of Legends",
   "Osu!",
 ];
 export const welcomeReplyWords = ["aleyküm selam", "as", "aleykümselam"];
