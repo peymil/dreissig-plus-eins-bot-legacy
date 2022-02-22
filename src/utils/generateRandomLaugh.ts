@@ -1,5 +1,8 @@
 const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZabcçdefgğhii̇jklmnoöprsştuüvyz";
 
+
+
+
 const generateRandomLaugh = (min: number, max: number) => {
   const chars = [];
   for (let n = 0; n < Math.floor(Math.random() * max + 1) + min; n++) {
