@@ -6,15 +6,12 @@ import config from "./config";
 import { importx } from "@discordx/importer";
 import path from "path";
 import isBotItself from "./guards/isBotItself";
+import { intents } from "./constants";
 
 //Driver
 const main = async () => {
   const client = new Client({
-    intents: [
-      Intents.FLAGS.GUILDS,
-      Intents.FLAGS.GUILD_MESSAGES,
-      Intents.FLAGS.GUILD_PRESENCES,
-    ],
+    intents,
     guards: [isBotItself],
   });
   await config.loadValues().catch(() => config.saveValues());

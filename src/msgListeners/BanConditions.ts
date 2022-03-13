@@ -1,8 +1,9 @@
 import { DiscordAPIError } from "discord.js";
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
 import { BANNED_ACTIVITIES } from "../constants";
+
 @Discord()
-abstract class Jokes {
+class BanConditions {
   @On("presenceUpdate")
   async forbiddenGames([oldPresence, newPresence]: ArgsOf<"presenceUpdate">, client: Client) {
     const currentActivity = newPresence?.activities[0];
@@ -32,5 +33,4 @@ abstract class Jokes {
     }
   }
 }
-
-export default Jokes;
+export default BanConditions;

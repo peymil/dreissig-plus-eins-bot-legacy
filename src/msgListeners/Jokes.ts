@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { ArgsOf, Client, Discord, Guard, On } from "discordx";
 import { Parser } from "expr-eval";
 import config from "../config";
-import { welcomeReplyWords, welcomeWords, cumGibiLink } from "../constants";
+import { welcomeReplyWords, welcomeWords, cumGibiLink, wordsToLaugh } from "../constants";
 import ChannelEventProvider from "../event/ChannelEventProvider";
 import doesIncludesAsSubstring from "../utils/doesIncludesAsSubstring";
 import generateRandomLaugh from "../utils/generateRandomLaugh";
@@ -50,6 +50,12 @@ abstract class Jokes {
         return;
       }
     }
+  }
+
+  @On("messageCreate")
+  laughToWords([msg]: ArgsOf<"messageCreate">) {
+    if (wordsToLaugh.some((word) => doesIncludesAsSubstring(msg.content, word)))
+      msg.channel.send(generateRandomLaugh(30, 60));
   }
 
   @On("messageCreate")
