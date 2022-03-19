@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { Intents, Interaction, Message } from "discord.js";
 import { Client } from "discordx";
 import { createConnection } from "../node_modules/typeorm/index.js";
 import config from "./config";
