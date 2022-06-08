@@ -10,7 +10,7 @@
     "expr-eval": "^2.0.2",
     "mathjs": "^10.6.1",
     "reflect-metadata": "^0.1.13",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.0.3",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {
