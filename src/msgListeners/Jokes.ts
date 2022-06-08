@@ -60,7 +60,7 @@ abstract class Jokes {
 
   @On("messageCreate")
   laughToCum([msg]: ArgsOf<"messageCreate">) {
-    if (doesIncludesAsSubstring(msg.content, "cum") || doesIncludesAsSubstring(msg.content, "kum") ) {
+    if (doesIncludesAsSubstring(msg.content, "cum") || doesIncludesAsSubstring(msg.content, "kum")) {
       msg.channel.send(cumGibiLink);
     }
   }
@@ -101,4 +101,5 @@ abstract class Jokes {
     }
   }
 }
+
 export default Jokes;
